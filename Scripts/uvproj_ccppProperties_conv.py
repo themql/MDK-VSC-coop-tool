@@ -82,10 +82,9 @@ def ConvertToVsCodeFormat(KeilProjectPath, list):
     for l in list:
         for n, i in enumerate(l.include_path):
             l.include_path[n] = i.replace("\\\\", "/").replace("\\", "/").lstrip()
-            if KeilProjectPath is None:
-                l.include_path[n] = "${workspaceFolder}/"+l.include_path[n]
-            else:
-                l.include_path[n] = "${workspaceFolder}/"+KeilProjectPath+"/"+l.include_path[n]
+            if KeilProjectPath is not None:
+                l.include_path[n] = KeilProjectPath+"/"+l.include_path[n]
+            l.include_path[n] = os.path.abspath(l.include_path[n]).replace("\\", "/")
         l.include_path.insert(0, APP_ARGS.compiler_include_path)
     return list
 
@@ -229,14 +228,16 @@ def PrintData(list):
             print("    ", e)
 
 
-def WriteParseKeilProjectBatchFile(KeilProjectFilename, BatFilePath):
+def WriteParseKeilProjectBatchFile(KeilProjectFilename, CompilerIncludePath, JsonFilePath, BatFilePath):
     text = "@echo off\n"
     text += "\n"
     text += "echo( %\n"
     text += "echo current path:\n"
     text += "chdir\n"
     text += f'SET KEIL_PROJECT_PATH=./{KeilProjectFilename}\n'
-    text += f'python ../Scripts/uvproj_ccppProperties_conv.py "%KEIL_PROJECT_PATH%" -o ../.vscode/c_cpp_properties.json\n'
+    text += f'SET COMPILER_INC_PATH={CompilerIncludePath}\n'
+    text += f'SET JSON_FILE_PATH=../{JsonFilePath}\n'
+    text += f'python ../Scripts/uvproj_ccppProperties_conv.py "%KEIL_PROJECT_PATH%" -i "%COMPILER_INC_PATH%" -o "%JSON_FILE_PATH%"\n'
     text += f'%ifErr% echo( & %errExit%\n'
 
     folder_path = BatFilePath.rsplit("/", 1)[0]
@@ -300,5 +301,5 @@ if __name__ == "__main__":
         PrintData(keil_project_options)
     WriteJsonFile(keil_project_options, APP_ARGS.output_file_path)
     if(APP_ARGS.genbat):
-        WriteParseKeilProjectBatchFile(keil_project_filename, APP_ARGS.bat_file_path)
+        WriteParseKeilProjectBatchFile(keil_project_filename, APP_ARGS.compiler_include_path, APP_ARGS.output_file_path, APP_ARGS.bat_file_path)
     logging.info("Done")

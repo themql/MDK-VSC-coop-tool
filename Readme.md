@@ -6,7 +6,7 @@ A script for pytrhon 3.x parse the keil project `.uvproj` and create c configuat
 
 ## How to use
 
-1. check the python ,vscode and the plugin C/C++ for Visual Studio Code is running on your compute correstly;
+1. check the python ,vscode and the plugin C/C++ for Visual Studio Code is running on your compute correctly;
 
 2. copy the Scripts folder to workspace, and the file hierarchy should be like following;
    
@@ -30,7 +30,7 @@ A script for pytrhon 3.x parse the keil project `.uvproj` and create c configuat
    
    if you dont't install keil in the default place, attaching the `-i COMPILER_INCLUDE_PATH` to indicate the complier lib path
    
-   if you want to generate the batch file in another place, using `--bat_file_path BAT_FILE_PATH`
+   if you want to generate the batch file in another place, using `--bat_file_path BAT_FILE_PATH`, but you need to correct the path in the batch file manually
 
 ```
 python .\Scripts\uvproj_ccppProperties_conv.py .\MDK-ARM\*.uvprojx --genbat
@@ -40,10 +40,6 @@ python .\Scripts\uvproj_ccppProperties_conv.py .\MDK-ARM\*.uvprojx --genbat
 
 5. run build in keil, and you will see the infomation displayed in Build Output panel
 
-
-
 ## Thanks to
 
 [Daniel "Thready" Nitecki / Keil_integration_into_VSCode_and_STM32CubeIDE · GitLab](https://gitlab.com/niciki/keil_integration_with_vscode)
-
-
